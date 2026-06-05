@@ -1,0 +1,30 @@
+# Core Framework
+Django==6.0.4
+gunicorn==23.0.0
+
+# Data Processing & ML
+pandas>=2.3.3
+pyarrow>=22.0.0
+fastparquet>=2024.11.0
+numpy==2.3.5
+scipy==1.16.3
+scikit-learn>=1.7.2
+
+# Static Files & Performance
+whitenoise[brotli]==6.11.0
+
+# Caching
+django-redis==6.0.0
+redis==7.1.0
+
+# Environment Management
+python-decouple>=3.8
+
+# API & Validation
+djangorestframework==3.16.1
+
+# Development Tools
+django-extensions==4.1
+
+# Security
+django-cors-headers==4.9.0
