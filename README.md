@@ -54,15 +54,11 @@ The Movie Recommendation System provides intelligent movie suggestions using **c
 
 ---
 
-## 📸 Screenshots & Demo
-
-### Demo Video
-
-![Application Demo](./assets/demo-video/Application-Demo.gif)
+## 📸 Screenshots 
 
 ### Model Loading
 
-![Model Loading](./assets//images-for-readme/Loading.png)
+![Model Loading](./assets/images-for-readme/Loading.png)
 
 ### Home Page
 
