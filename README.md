@@ -12,7 +12,6 @@
 ## 📑 Table of Contents
 
 - [Overview](#-overview)
-- [Screenshots](#-screenshots)
 - [Features](#-features)
 - [Quick Start](#-quick-start)
 - [Project Structure](#-project-structure)
