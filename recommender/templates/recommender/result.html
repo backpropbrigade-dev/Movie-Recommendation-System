@@ -1,0 +1,544 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Movie recommendations for {{ input_movie_name }}">
+    <title>Recommendations for {{ input_movie_name }} | Movie Recommendation System</title>
+    
+    <link rel="shortcut icon" href="{% static 'logo.ico' %}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --success: #10b981;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1f3a 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Animated background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .logo-link:hover {
+            color: var(--primary-color);
+        }
+
+        .logo-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Results Header */
+        .results-header {
+            text-align: center;
+            padding: 3rem 2rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .results-title {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .searched-movie {
+            color: var(--primary-color);
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+        }
+
+        .results-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem 4rem;
+        }
+
+        /* Movie Grid */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        /* Movie Card */
+        .movie-card {
+            background: var(--surface);
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .movie-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .movie-rank {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .movie-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .movie-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+            padding-right: 50px;
+        }
+
+        .movie-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .movie-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .movie-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .movie-link {
+            flex: 1;
+            min-width: 120px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border: 2px solid;
+        }
+
+        .link-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .link-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .link-secondary {
+            background: transparent;
+            border-color: var(--surface-light);
+            color: var(--text-secondary);
+        }
+
+        .link-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll-based animation for cards */
+        .movie-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        .movie-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .header-content {
+                justify-content: center;
+            }
+
+            .results-header {
+                padding: 2rem 1rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .movie-card {
+                padding: 1.5rem;
+            }
+
+            .movie-actions {
+                flex-direction: column;
+            }
+
+            .movie-link {
+                width: 100%;
+            }
+        }
+
+        /* No results state */
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo-link">
+                <span>Movie Recommendation System</span>
+            </a>
+            <a href="/" class="back-button">
+                ← New Search
+            </a>
+        </div>
+    </header>
+
+    <!-- Results Header -->
+    <div class="results-header">
+        <h1 class="results-title">
+            Movies like <span class="searched-movie">{{ input_movie_name }}</span>
+        </h1>
+        {% if source_movie %}
+        <p class="results-subtitle">
+            {{ source_movie.production }} | {{ source_movie.rating }} | {{ source_movie.genres }}
+        </p>
+        {% endif %}
+        <p class="results-subtitle">
+            We found {{ total_recommendations|default:"15" }} amazing recommendations for you
+        </p>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        {% if recommended_movies %}
+        <div class="movies-grid">
+            {% for movie in recommended_movies %}
+            <article class="movie-card">
+                <div class="movie-rank">{{ forloop.counter }}</div>
+                <span class="movie-icon">🎬</span>
+                
+                <h2 class="movie-title">{{ movie.title }}</h2>
+                
+                <div class="movie-details">
+                    <div class="movie-detail">
+                        <span class="detail-icon">⭐</span>
+                        <span>{{ movie.rating }} ({{ movie.votes }} votes)</span>
+                    </div>
+                    <div class="movie-detail">
+                        <span class="detail-icon">📅</span>
+                        <span>{{ movie.release_date }}</span>
+                    </div>
+                    <div class="movie-detail">
+                        <span class="detail-icon">🎭</span>
+                        <span>{{ movie.genres }}</span>
+                    </div>
+                    <div class="movie-detail">
+                        <span class="detail-icon">🏢</span>
+                        <span>{{ movie.production }}</span>
+                    </div>
+                </div>
+
+                <div class="movie-actions">
+                    <a href="{{ movie.google_link }}" target="_blank" rel="noopener noreferrer" class="movie-link link-primary">
+                        🔍 Google
+                    </a>
+                    {% if movie.imdb_link %}
+                    <a href="{{ movie.imdb_link }}" target="_blank" rel="noopener noreferrer" class="movie-link link-secondary">
+                        ⭐ IMDb
+                    </a>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-results">
+            <div class="no-results-icon">😕</div>
+            <h2>No recommendations found</h2>
+            <p>We couldn't find any recommendations for this movie. Please try another one.</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Made with ❤️ for movie lovers | © <span id="currentYear"></span> Movie Recommendation System</p>
+    </footer>
+    <script>
+        // Set dynamic year in footer
+        document.addEventListener("DOMContentLoaded", function() {
+            var currentYear = new Date().getFullYear();
+            document.getElementById("currentYear").textContent = currentYear;
+        });
+    </script>
+
+    <script>
+        // Smooth scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Scroll-based animation for cards
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all movie cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.movie-card');
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Add interactive feedback
+        document.querySelectorAll('.movie-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'A') {
+                    this.style.transform = 'scale(0.98) translateY(0)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
