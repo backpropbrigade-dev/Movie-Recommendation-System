@@ -56,6 +56,10 @@ The Movie Recommendation System provides intelligent movie suggestions using **c
 
 ## 📸 Screenshots & Demo
 
+### Demo Video
+
+![Application Demo](./assets/demo-video/Application-Demo.gif)
+
 ### Model Loading
 
 ![Model Loading](./assets//images-for-readme/Loading.png)
@@ -512,6 +516,14 @@ Need help? Here are your options:
 - UI inspired by modern design principles
 - Community contributions and feedback
 
+---
 
+<div align="center">
 
+**Made with ❤️ for movie lovers and developers**
 
+[⭐ Star this repo](https://github.com/yourusername/movie-recommendation-system) •
+[🐛 Report Bug](https://github.com/yourusername/movie-recommendation-system/issues) •
+[💡 Request Feature](https://github.com/yourusername/movie-recommendation-system/issues)
+
+</div>
