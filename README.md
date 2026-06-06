@@ -8,9 +8,6 @@
 
 ---
 
-![Logo Image](./assets/images-for-readme/Logo.png)
-
----
 
 ## 📑 Table of Contents
 
@@ -34,7 +31,6 @@
 The Movie Recommendation System provides intelligent movie suggestions using **content-based filtering** with TF-IDF and SVD dimensionality reduction. It features a modern web interface, RESTful API, and supports datasets from 2K to 1M+ movies.
 
 
-![Header Image](./assets/images-for-readme/Header.png)
 
 
 ### Why This Project?
@@ -51,22 +47,6 @@ The Movie Recommendation System provides intelligent movie suggestions using **c
 - **ML/Data**: scikit-learn, pandas, numpy, scipy
 - **Storage**: Parquet (efficient data format)
 - **Deployment**: Render, Heroku, Docker compatible
-
----
-
-## 📸 Screenshots 
-
-### Model Loading
-
-![Model Loading](./assets/images-for-readme/Loading.png)
-
-### Home Page
-
-![Home Page](./assets/images-for-readme/Homepage.png)
-
-### Movie Search Recommendations
-
-![Movie Recommendations](./assets/images-for-readme/Results.png)
 
 ---
 
@@ -127,16 +107,6 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### Access the Application
-
-Open your browser and navigate to:
-```
-http://localhost:8000
-```
-
-That's it! The demo model (2K movies) is included and works out of the box. 🎉
-
----
 
 ## 📁 Project Structure
 
@@ -192,7 +162,6 @@ movie-recommendation-system/
     └── .gitignore                # Git ignore rules
 ```
 
----
 
 ## 💡 Usage
 
