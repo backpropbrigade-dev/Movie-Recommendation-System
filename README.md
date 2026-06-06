@@ -512,15 +512,6 @@ Need help? Here are your options:
 - UI inspired by modern design principles
 - Community contributions and feedback
 
----
 
-<div align="center">
 
-**Made with ❤️ for movie lovers and developers**
-
-[⭐ Star this repo](https://github.com/yourusername/movie-recommendation-system) •
-[🐛 Report Bug](https://github.com/yourusername/movie-recommendation-system/issues) •
-[💡 Request Feature](https://github.com/yourusername/movie-recommendation-system/issues)
-
-</div>
 
